@@ -6,6 +6,11 @@ const App = () => {
 
   const addPerson = (e) => {
     e.preventDefault()
+    const isAlreadyExist = persons.find((person) => person.name === newName)
+    if (isAlreadyExist) {
+      alert(`${newName} is already added to phonebook`)
+      return
+    }
     setPersons((prevState) => [...prevState, { name: newName }])
     setNewName('')
   }
