@@ -2,7 +2,7 @@ import { useState } from 'react'
 const Header = ({ text }) => <h2>{text}</h2>
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '123' },
+    { name: 'Arto Hellas', number: '123', id: 1 },
   ])
   const [newContact, setNewContact] = useState({ name: '', number: '' })
   const [searchContactByName, setSearchContactByName] = useState('')
@@ -16,10 +16,13 @@ const App = () => {
       alert(`${newContact.name} is already added to phonebook`)
       return
     }
+    let newId = persons.map((person) => person.id)
+    let maxId = Math.max(...newId)
     setPersons((prevState) => [
       ...prevState,
-      { name: newContact.name, number: newContact.number },
+      { name: newContact.name, number: newContact.number, id: maxId + 1 },
     ])
+
     setNewContact({ name: '', number: '' })
   }
   const changeNameHandler = (e) => {
@@ -42,6 +45,7 @@ const App = () => {
     console.log(searchContactByName)
   }
 
+  console.log(persons)
   return (
     <div>
       <Header text="Phonebiik" />
