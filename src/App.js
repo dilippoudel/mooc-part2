@@ -1,5 +1,8 @@
 import { useState } from 'react'
-const Header = ({ text }) => <h2>{text}</h2>
+import PersonForm from './components/PersonForm/PersonForm'
+import Filter from './components/Filter/Filter'
+import Persons from './components/Person/Person'
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '123', id: 1 },
@@ -39,56 +42,21 @@ const App = () => {
     }
     setNewContact(createNew)
   }
-  const searchTextHandler = (e) => {
-    setSearchContactByName(e.target.value)
-    console.log(e.target.value)
-    console.log(searchContactByName)
-  }
-
-  console.log(persons)
   return (
     <div>
-      <Header text="Phonebiik" />
-      <input
-        type="text"
-        placeholder="Search contact..."
-        onChange={searchTextHandler}
+      <h2>PhoneBook</h2>
+      <Filter setSearchContactByName={setSearchContactByName} />
+      <h3>Add New Contact</h3>
+      <PersonForm
+        addPerson={addPerson}
+        changeNameHandler={changeNameHandler}
+        newContactName={newContact.name}
+        newContactPhone={newContact.number}
+        changeNumberHandler={changeNumberHandler}
       />
-      <Header text="add a new" />
-      <form onSubmit={addPerson}>
-        <div>
-          Name:{' '}
-          <input
-            type="text"
-            value={newContact.name}
-            onChange={changeNameHandler}
-          />
-        </div>
-        <div>
-          Number:{' '}
-          <input
-            type="text"
-            value={newContact.number}
-            onChange={changeNumberHandler}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <Header text="Numbers" />
+      <h3>Numbers</h3>
       <div>
-        {persons
-          .filter((person) =>
-            person.name
-              .toLowerCase()
-              .includes(searchContactByName.toLowerCase()),
-          )
-          .map((person) => (
-            <p key={person.name}>
-              {person.name} {person.number}
-            </p>
-          ))}
+        <Persons lists={persons} searchText={searchContactByName} />
       </div>
     </div>
   )
