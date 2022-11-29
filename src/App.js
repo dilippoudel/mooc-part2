@@ -5,6 +5,7 @@ const App = () => {
     { name: 'Arto Hellas', number: '123' },
   ])
   const [newContact, setNewContact] = useState({ name: '', number: '' })
+  const [searchContactByName, setSearchContactByName] = useState('')
 
   const addPerson = (e) => {
     e.preventDefault()
@@ -35,9 +36,21 @@ const App = () => {
     }
     setNewContact(createNew)
   }
+  const searchTextHandler = (e) => {
+    setSearchContactByName(e.target.value)
+    console.log(e.target.value)
+    console.log(searchContactByName)
+  }
+
   return (
     <div>
-      <Header text="PhoneBook" />
+      <Header text="Phonebiik" />
+      <input
+        type="text"
+        placeholder="Search contact..."
+        onChange={searchTextHandler}
+      />
+      <Header text="add a new" />
       <form onSubmit={addPerson}>
         <div>
           Name:{' '}
@@ -59,13 +72,19 @@ const App = () => {
           <button type="submit">add</button>
         </div>
       </form>
-      <Header text="Number" />
+      <Header text="Numbers" />
       <div>
-        {persons.map((person) => (
-          <p key={person.name}>
-            {person.name} {person.number}
-          </p>
-        ))}
+        {persons
+          .filter((person) =>
+            person.name
+              .toLowerCase()
+              .includes(searchContactByName.toLowerCase()),
+          )
+          .map((person) => (
+            <p key={person.name}>
+              {person.name} {person.number}
+            </p>
+          ))}
       </div>
     </div>
   )
