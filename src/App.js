@@ -1,36 +1,60 @@
-import axios from 'axios'
 import { useState, useEffect } from 'react'
-import Note from './components/Note/Note'
-function App() {
-  const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('')
-  const [showAll, setShowAll] = useState(true)
-
-  const hook = () => {
-    axios.get('http://localhost:3001/notes').then((response) => {
-      console.log('promise fullfiled')
-      setNotes(response.data)
-    })
+import axios from 'axios'
+const App = () => {
+  const [countries, setCountries] = useState([])
+  const [searchText, setSearchText] = useState('')
+  const [filteredCountries, setFilteredCountries] = useState([])
+  const hooks = () => {
+    axios
+      .get(`https://restcountries.com/v3.1/all`)
+      .then((response) => setCountries(response.data))
   }
-  useEffect(hook, [])
-  console.log('renders', notes.length, ' notes')
 
-  const notesToShowAll = showAll
-    ? notes
-    : notes.filter((note) => note.important === true)
+  const searchTextHandler = (e) => {
+    console.log('target value is ', e.target.value)
+    setSearchText(e.target.value)
+    const data = countries.filter((country) =>
+      country.name.common.toLowerCase().includes(searchText.toLowerCase()),
+    )
+    setFilteredCountries(data)
+  }
+
+  const renderingCountries = () => {
+    if (searchText.length === 0) {
+      return
+    }
+    if (filteredCountries.length > 10) {
+      return <p>too many render</p>
+    }
+    if (filteredCountries.length === 1) {
+      return (
+        <div>
+          {filteredCountries.map((country, i) => {
+            console.log(country)
+            return (
+              <div key={i}>
+                <h4>{country.name.common}</h4>
+                <h5>Languages</h5>
+                {/* I want render the list of all languages of a specific county:
+                For eg, When I enter swi in search text box, it should render 4 languages:   */}
+                {/* {country.languages.map((l) => console.log(l))} */}
+              </div>
+            )
+          })}
+        </div>
+      )
+    }
+    return
+  }
+  useEffect(hooks, [])
   return (
     <div>
-      <h1>Notes</h1>
-      <button onClick={() => setShowAll(!showAll)}>
-        {showAll ? 'show Important' : 'show all'}
-      </button>
-      <ul>
-        {notesToShowAll.map((note) => (
-          <Note key={note.id} note={note} />
-        ))}
-      </ul>
+      <div>
+        <label htmlFor="find">Find Countries</label>
+        <input type="text" value={searchText} onChange={searchTextHandler} />
+      </div>
+      {renderingCountries()}
     </div>
   )
 }
-
 export default App
