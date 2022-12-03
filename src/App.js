@@ -11,20 +11,32 @@ const App = () => {
   }
 
   const searchTextHandler = (e) => {
-    console.log('target value is ', e.target.value)
     setSearchText(e.target.value)
+  }
+  const filtering = () => {
     const data = countries.filter((country) =>
       country.name.common.toLowerCase().includes(searchText.toLowerCase()),
     )
     setFilteredCountries(data)
   }
 
+  useEffect(filtering, [searchText])
+
   const renderingCountries = () => {
-    if (searchText.length === 0) {
-      return
-    }
+    // if (searchText.length === 0) {
+    //   return
+    // }
     if (filteredCountries.length > 10) {
       return <p>too many render</p>
+    }
+    if (filteredCountries.length < 10) {
+      return (
+        <div>
+          {filteredCountries.map((c, i) => (
+            <h4 key={i}>{c.name.common}</h4>
+          ))}
+        </div>
+      )
     }
     if (filteredCountries.length === 1) {
       return (
