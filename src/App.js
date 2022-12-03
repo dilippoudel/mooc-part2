@@ -37,28 +37,27 @@ const App = () => {
       )
     }
     if (filteredCountries.length === 1) {
-      console.log('l are ', filteredCountries[0].languages)
+      return (
+        <div>
+          {filteredCountries.map((country, i) => {
+            return (
+              <div key={i}>
+                <h4>{country.name.common}</h4>
+                <h5>Languages</h5>
 
-      // return (
-      // <div>
-      //   {filteredCountries.map((country, i) => {
-      //     console.log('counties in filter', country)
-
-      //     return (
-      //       <div key={i}>
-      //         <h4>{country.name.common}</h4>
-      //         <h5>Languages</h5>
-      //         {/* I want render the list of all languages of a specific county:
-      //         For eg, When I enter swi in search text box, it should render 4 languages:   */}
-      //         {/* {country.languages.map((l) => console.log(l))} */}
-      //         {console.log('languages, ', country.languages)}
-      //         <h2>hello</h2>
-      //       </div>
-      //     )
-      //   })}
-      // </div>
-
-      // )
+                {Object.values(country.languages).map((lang, i) => {
+                  return (
+                    <ul key={i}>
+                      <li>{lang}</li>
+                    </ul>
+                  )
+                })}
+              </div>
+            )
+          })}
+          <img src={`${filteredCountries[0].flags.png}`} alt="" />
+        </div>
+      )
     }
     return
   }
@@ -75,4 +74,5 @@ const App = () => {
     </div>
   )
 }
+
 export default App
