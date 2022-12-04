@@ -3,6 +3,7 @@ import axios from 'axios'
 import { BASE_URL_COUNTRIES_API, BASE_URL_WEATHER_API } from './Constant'
 import Button from './components/Button/Button'
 import Form from './components/Form/Form'
+import Country from './components/Country/Country'
 const App = () => {
   const [countries, setCountries] = useState([])
   const [searchText, setSearchText] = useState('')
@@ -64,25 +65,10 @@ const App = () => {
     if (filteredCountries.length === 1) {
       return (
         <div>
-          {filteredCountries.map((country, i) => {
-            return (
-              <div key={i}>
-                <h4>{country.name.common}</h4>
-                <h5>Languages</h5>
+          <Country countries={filteredCountries} />
 
-                {Object.values(country.languages).map((lang, i) => {
-                  return (
-                    <ul key={i}>
-                      <li>{lang}</li>
-                    </ul>
-                  )
-                })}
-              </div>
-            )
-          })}
           <img src={`${filteredCountries[0].flags.png}`} alt="" />
           <h2>Weather in {filteredCountries[0].capital}</h2>
-
           {weatherDetails !== null ? (
             <div>
               <p>{`Temperature: ${(weatherDetails.main.temp - 273).toFixed(
