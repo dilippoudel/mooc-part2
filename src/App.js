@@ -31,7 +31,14 @@ const App = () => {
       return (
         <div>
           {filteredCountries.map((c, i) => (
-            <h4 key={i}>{c.name.common}</h4>
+            <div key={i}>
+              <p>
+                {c.name.common}
+                <button onClick={() => setSearchText(c.name.common)}>
+                  show
+                </button>
+              </p>
+            </div>
           ))}
         </div>
       )
