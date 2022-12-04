@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { BASE_URL_COUNTRIES_API, BASE_URL_WEATHER_API } from './Constant'
 import Button from './components/Button/Button'
+import Form from './components/Form/Form'
 const App = () => {
   const [countries, setCountries] = useState([])
   const [searchText, setSearchText] = useState('')
@@ -24,9 +25,6 @@ const App = () => {
     return
   }
 
-  const searchTextHandler = (e) => {
-    setSearchText(e.target.value)
-  }
   const filtering = () => {
     const data = countries.filter((country) =>
       country.name.common.toLowerCase().includes(searchText.toLowerCase()),
@@ -107,10 +105,10 @@ const App = () => {
 
   return (
     <div>
-      <div>
-        <label htmlFor="find">Find Countries</label>
-        <input type="text" value={searchText} onChange={searchTextHandler} />
-      </div>
+      <Form
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
       {renderingCountries()}
     </div>
   )
