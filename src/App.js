@@ -1,23 +1,27 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { BASE_URL_COUNTRIES_API, BASE_URL_WEATHER_API } from './Constant'
+import Button from './components/Button/Button'
 const App = () => {
   const [countries, setCountries] = useState([])
   const [searchText, setSearchText] = useState('')
   const [filteredCountries, setFilteredCountries] = useState([])
-  const [weatherDetails, setWeatherDetails] = useState({})
+  const [weatherDetails, setWeatherDetails] = useState(null)
   const countryHook = () => {
     axios
-      .get(`https://restcountries.com/v3.1/all`)
+      .get(BASE_URL_COUNTRIES_API)
       .then((response) => setCountries(response.data))
   }
   const weatherHook = () => {
+    const API_KEY = process.env.REACT_APP_API_KEY
     if (filteredCountries.length === 1) {
       axios
         .get(
-          `https://api.openweathermap.org/data/2.5/weather?appid=5d33be1060cd03ed695aaece10625218&q=${filteredCountries[0].capital}`,
+          `${BASE_URL_WEATHER_API}${API_KEY}&q=${filteredCountries[0].capital}`,
         )
         .then((response) => setWeatherDetails(response.data))
     }
+    return
   }
 
   const searchTextHandler = (e) => {
@@ -41,7 +45,6 @@ const App = () => {
     if (filteredCountries.length > 10) {
       return <p>too many render</p>
     }
-    // 5d33be1060cd03ed695aaece10625218
 
     if (filteredCountries.length < 10 && filteredCountries.length > 1) {
       return (
@@ -50,9 +53,10 @@ const App = () => {
             <div key={i}>
               <p>
                 {c.name.common}
-                <button onClick={() => setSearchText(c.name.common)}>
-                  show
-                </button>
+                <Button
+                  onClick={() => setSearchText(c.name.common)}
+                  text="show"
+                />
               </p>
             </div>
           ))}
@@ -80,8 +84,21 @@ const App = () => {
           })}
           <img src={`${filteredCountries[0].flags.png}`} alt="" />
           <h2>Weather in {filteredCountries[0].capital}</h2>
-          {/* <p>{weatherDetails !== null ? weatherDetails.main.temp : ''}</p> */}
-          {/* I want to render the temperature of city here............ */}
+
+          {weatherDetails !== null ? (
+            <div>
+              <p>{`Temperature: ${(weatherDetails.main.temp - 273).toFixed(
+                2,
+              )} celcius `}</p>
+              <img
+                src={`http://openweathermap.org/img/wn/${weatherDetails.weather[0].icon}@2x.png`}
+                alt=""
+              />
+              <p>wind is {weatherDetails.wind.speed}m/s</p>
+            </div>
+          ) : (
+            'loading'
+          )}
         </div>
       )
     }
