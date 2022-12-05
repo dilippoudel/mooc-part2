@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { BASE_URL_COUNTRIES_API, BASE_URL_WEATHER_API } from './Constant'
-import Button from './components/Button/Button'
+import {
+  BASE_URL_COUNTRIES_API,
+  BASE_URL_WEATHER_API,
+  BASE_URL_OPEN_WEATHER_ICON,
+} from './Constant'
 import Form from './components/Form/Form'
+import Language from './components/Language/Language'
 import Country from './components/Country/Country'
+import Weather from './components/Weather/Weather'
 const App = () => {
   const [countries, setCountries] = useState([])
   const [searchText, setSearchText] = useState('')
@@ -47,46 +52,31 @@ const App = () => {
 
     if (filteredCountries.length < 10 && filteredCountries.length > 1) {
       return (
-        <div>
-          {filteredCountries.map((c, i) => (
-            <div key={i}>
-              <p>
-                {c.name.common}
-                <Button
-                  onClick={() => setSearchText(c.name.common)}
-                  text="show"
-                />
-              </p>
-            </div>
-          ))}
-        </div>
+        <Country
+          filteredCountries={filteredCountries}
+          searchText={setSearchText}
+        />
       )
     }
+
     if (filteredCountries.length === 1) {
       return (
         <div>
-          <Country countries={filteredCountries} />
+          <Language countries={filteredCountries} />
 
           <img src={`${filteredCountries[0].flags.png}`} alt="" />
           <h2>Weather in {filteredCountries[0].capital}</h2>
           {weatherDetails !== null ? (
-            <div>
-              <p>{`Temperature: ${(weatherDetails.main.temp - 273).toFixed(
-                2,
-              )} celcius `}</p>
-              <img
-                src={`http://openweathermap.org/img/wn/${weatherDetails.weather[0].icon}@2x.png`}
-                alt=""
-              />
-              <p>wind is {weatherDetails.wind.speed}m/s</p>
-            </div>
+            <Weather
+              weatherDetails={weatherDetails}
+              url={BASE_URL_OPEN_WEATHER_ICON}
+            />
           ) : (
             'loading'
           )}
         </div>
       )
     }
-    return
   }
 
   return (

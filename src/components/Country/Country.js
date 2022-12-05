@@ -1,12 +1,16 @@
-import List from '../List/List'
+import Button from '../Button/Button'
 
-const Country = ({ countries }) => {
+const Country = ({ filteredCountries, searchText }) => {
   return (
     <div>
-      <h4>{countries[0].name.common}</h4>
-      <h5>Languages</h5>
-
-      <List items={Object.values(countries[0].languages)} />
+      {filteredCountries.map((c, i) => (
+        <div key={i}>
+          <p>
+            {c.name.common}
+            <Button onClick={() => searchText(c.name.common)} text="show" />
+          </p>
+        </div>
+      ))}
     </div>
   )
 }
