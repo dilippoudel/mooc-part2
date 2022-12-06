@@ -5,6 +5,7 @@ import PersonForm from './components/PersonForm/PersonForm'
 import Filter from './components/Filter/Filter'
 
 import Persons from './components/Person/Person'
+import axios from 'axios'
 
 const App = () => {
   const [persons, setPersons] = useState(null)
@@ -43,6 +44,15 @@ const App = () => {
     }
     setNewContact(createNew)
   }
+  const phoneDeleteHandler = (id) => {
+    let itemToDelete = persons.find((person) => person.id === id)
+    if (window.confirm(`Delete ${itemToDelete.name} ?  `)) {
+      axios.delete(`http://localhost:3001/persons/${id}`).then(() => {
+        let updatedState = persons.filter((person) => person.id !== id)
+        setPersons(updatedState)
+      })
+    }
+  }
   return (
     <div>
       <h2>PhoneBook</h2>
@@ -58,7 +68,11 @@ const App = () => {
       <h3>Numbers</h3>
       <div>
         {persons !== null ? (
-          <Persons lists={persons} searchText={searchContactByName} />
+          <Persons
+            lists={persons}
+            searchText={searchContactByName}
+            onDelete={(id) => phoneDeleteHandler(id)}
+          />
         ) : (
           'loading'
         )}
