@@ -12,8 +12,12 @@ const getAllPerson = async () => {
   const response = await request
   return response.data
 }
-
+const deletePerson = (id) => {
+  const request = axios.delete(`http://localhost:3001/persons/${id}`)
+  return request
+}
 export default {
   createAndSavePerson,
   getAllPerson,
+  deletePerson,
 }

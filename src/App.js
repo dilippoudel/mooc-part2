@@ -46,13 +46,15 @@ const App = () => {
   }
   const phoneDeleteHandler = (id) => {
     let itemToDelete = persons.find((person) => person.id === id)
+
     if (window.confirm(`Delete ${itemToDelete.name} ?  `)) {
-      axios.delete(`http://localhost:3001/persons/${id}`).then(() => {
+      personService.deletePerson(id).then(() => {
         let updatedState = persons.filter((person) => person.id !== id)
         setPersons(updatedState)
       })
     }
   }
+
   return (
     <div>
       <h2>PhoneBook</h2>
