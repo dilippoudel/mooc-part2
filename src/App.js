@@ -5,18 +5,19 @@ import PersonForm from './components/PersonForm/PersonForm'
 import Filter from './components/Filter/Filter'
 
 import Persons from './components/Person/Person'
+import Notification from './components/Notification/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState(null)
   const [newContact, setNewContact] = useState({ name: '', number: '' })
   const [searchContactByName, setSearchContactByName] = useState('')
+  const [message, setMessage] = useState(null)
 
   const addPerson = (e) => {
     e.preventDefault()
     const findExistedPerson = persons.find(
       (person) => person.name === newContact.name,
     )
-    console.log('id for ', findExistedPerson.id)
     if (findExistedPerson) {
       if (
         window.confirm(
@@ -38,6 +39,8 @@ const App = () => {
       return
     }
     personService.createAndSavePerson(newContact).then((response) => {
+      setMessage(`Added ${response.name}`)
+      setTimeout(() => setMessage(null), 3000)
       setPersons(persons.concat(response))
       setNewContact({ name: '', number: '' })
     })
@@ -73,8 +76,9 @@ const App = () => {
   return (
     <div>
       <h2>PhoneBook</h2>
+      <Notification message={message} />
       <Filter setSearchContactByName={setSearchContactByName} />
-      <h3>Add New Contact</h3>
+
       <PersonForm
         addPerson={addPerson}
         changeNameHandler={changeNameHandler}
