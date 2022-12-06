@@ -1,10 +1,28 @@
 import noteService from './services/notes'
 import { useState, useEffect } from 'react'
 import Note from './components/Note/Note'
+import Notification from './components/Notification/Notification'
+// footer component
+const Footer = () => {
+  const footerStyle = {
+    color: 'green',
+    fontStyle: 'italic',
+    fontSize: 16,
+  }
+  return (
+    <div style={footerStyle}>
+      <br />
+      <em>
+        Note app, Department of Computer Science, University of Helsinki 2022
+      </em>
+    </div>
+  )
+}
 function App() {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     noteService.getAll().then((initialNotes) => setNotes(initialNotes))
@@ -32,7 +50,10 @@ function App() {
         setNotes(notes.map((n) => (n.id !== id ? n : returnedNote)))
       })
       .catch((err) => {
-        alert(`the note '${note.content}' was already deleted from server`)
+        setErrorMessage(
+          `Note '${note.content}' was already deleted from server`,
+        )
+        setTimeout(() => setErrorMessage(null), 3000)
         setNotes(notes.filter((note) => note.id !== id))
       })
   }
@@ -43,6 +64,7 @@ function App() {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMessage} />
       <form action="" onSubmit={addNote}>
         <input
           type="text"
@@ -63,6 +85,7 @@ function App() {
           />
         ))}
       </ul>
+      <Footer />
     </div>
   )
 }

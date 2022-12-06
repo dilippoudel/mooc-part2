@@ -1,11 +1,10 @@
 const Note = ({ note, toogleImportance }) => {
   const label = note.important ? 'make not important' : 'Make important'
   return (
-    <div>
-      <h4 className="title">{note.date}</h4>
-      <p>{note.content}</p>
+    <li className="note">
+      {note.content}
       <button onClick={toogleImportance}>{label}</button>
-    </div>
+    </li>
   )
 }
 export default Note
