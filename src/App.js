@@ -11,7 +11,7 @@ const App = () => {
   const [persons, setPersons] = useState(null)
   const [newContact, setNewContact] = useState({ name: '', number: '' })
   const [searchContactByName, setSearchContactByName] = useState('')
-  const [message, setMessage] = useState(null)
+  const [notification, setNotification] = useState(null)
 
   const addPerson = (e) => {
     e.preventDefault()
@@ -34,13 +34,25 @@ const App = () => {
 
             setNewContact({ name: '', number: '' })
           })
+          .catch((e) => {
+            let errorMessage = {
+              ...notification,
+              error: `Information of ${newContact.name} has already been removed from server.`,
+            }
+            setNotification(errorMessage)
+            setTimeout(() => setNotification(null), 3000)
+          })
       }
 
       return
     }
     personService.createAndSavePerson(newContact).then((response) => {
-      setMessage(`Added ${response.name}`)
-      setTimeout(() => setMessage(null), 3000)
+      let newState = {
+        ...notification,
+        success: `Added ${response.name}`,
+      }
+      setNotification(newState)
+      setTimeout(() => setNotification(null), 3000)
       setPersons(persons.concat(response))
       setNewContact({ name: '', number: '' })
     })
@@ -76,7 +88,7 @@ const App = () => {
   return (
     <div>
       <h2>PhoneBook</h2>
-      <Notification message={message} />
+      <Notification message={notification} />
       <Filter setSearchContactByName={setSearchContactByName} />
 
       <PersonForm

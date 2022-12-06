@@ -4,8 +4,10 @@ const Notification = ({ message }) => {
     return
   }
   return (
-    <div className="notification">
-      <p className="text">{message}</p>
+    <div className={message.success ? 'success' : 'error'}>
+      <p className="text">
+        {message.success ? message.success : message.error}
+      </p>
     </div>
   )
 }
