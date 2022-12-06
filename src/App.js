@@ -5,24 +5,36 @@ import PersonForm from './components/PersonForm/PersonForm'
 import Filter from './components/Filter/Filter'
 
 import Persons from './components/Person/Person'
-import axios from 'axios'
 
 const App = () => {
   const [persons, setPersons] = useState(null)
   const [newContact, setNewContact] = useState({ name: '', number: '' })
   const [searchContactByName, setSearchContactByName] = useState('')
 
-  useEffect(() => {
-    personService.getAllPerson().then((response) => setPersons(response))
-  }, [])
-
   const addPerson = (e) => {
     e.preventDefault()
-    const isAlreadyExist = persons.find(
+    const findExistedPerson = persons.find(
       (person) => person.name === newContact.name,
     )
-    if (isAlreadyExist) {
-      alert(`${newContact.name} is already added to phonebook`)
+    console.log('id for ', findExistedPerson.id)
+    if (findExistedPerson) {
+      if (
+        window.confirm(
+          `${newContact.name} is already added to phonebook, replace the old number with a new one?`,
+        )
+      ) {
+        personService
+          .replaceNumber(findExistedPerson.id, newContact)
+          .then((response) => {
+            let contacts = persons.filter(
+              (person) => person.id !== findExistedPerson.id,
+            )
+            setPersons(contacts.concat(response.data))
+
+            setNewContact({ name: '', number: '' })
+          })
+      }
+
       return
     }
     personService.createAndSavePerson(newContact).then((response) => {
@@ -54,6 +66,9 @@ const App = () => {
       })
     }
   }
+  useEffect(() => {
+    personService.getAllPerson().then((response) => setPersons(response))
+  }, [])
 
   return (
     <div>

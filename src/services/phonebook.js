@@ -16,8 +16,14 @@ const deletePerson = (id) => {
   const request = axios.delete(`http://localhost:3001/persons/${id}`)
   return request
 }
+const replaceNumber = async (id, newData) => {
+  const request = axios.put(`${baseUrl}/${id}`, newData)
+  const response = await request
+  return response
+}
 export default {
   createAndSavePerson,
   getAllPerson,
   deletePerson,
+  replaceNumber,
 }
