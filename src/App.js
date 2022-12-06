@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import PersonForm from './components/PersonForm/PersonForm'
 import Filter from './components/Filter/Filter'
-import Persons from './components/Person/Person'
 import axios from 'axios'
 import { useEffect } from 'react'
+import Persons from './components/Person/Person'
 const App = () => {
   const [persons, setPersons] = useState(null)
   const [newContact, setNewContact] = useState({ name: '', number: '' })
@@ -20,7 +20,7 @@ const App = () => {
   //create and save data to server
   const createAndSavePerson = (newPerson) => {
     axios.post('http://localhost:3001/persons', newPerson).then((response) => {
-      setPersons((prevState) => [prevState, response.data])
+      setPersons(persons.concat(response.data))
     })
   }
   const addPerson = (e) => {
