@@ -1,28 +1,20 @@
-import { useState } from 'react'
+import personService from './services/phonebook'
+import { useState, useEffect } from 'react'
+
 import PersonForm from './components/PersonForm/PersonForm'
 import Filter from './components/Filter/Filter'
-import axios from 'axios'
-import { useEffect } from 'react'
+
 import Persons from './components/Person/Person'
+
 const App = () => {
   const [persons, setPersons] = useState(null)
   const [newContact, setNewContact] = useState({ name: '', number: '' })
   const [searchContactByName, setSearchContactByName] = useState('')
 
-  // getting data from server
-  const getAllPerson = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response) => setPersons(response.data))
-  }
-  useEffect(getAllPerson, [])
+  useEffect(() => {
+    personService.getAllPerson().then((response) => setPersons(response))
+  }, [])
 
-  //create and save data to server
-  const createAndSavePerson = (newPerson) => {
-    axios.post('http://localhost:3001/persons', newPerson).then((response) => {
-      setPersons(persons.concat(response.data))
-    })
-  }
   const addPerson = (e) => {
     e.preventDefault()
     const isAlreadyExist = persons.find(
@@ -32,9 +24,10 @@ const App = () => {
       alert(`${newContact.name} is already added to phonebook`)
       return
     }
-    createAndSavePerson(newContact)
-
-    setNewContact({ name: '', number: '' })
+    personService.createAndSavePerson(newContact).then((response) => {
+      setPersons(persons.concat(response))
+      setNewContact({ name: '', number: '' })
+    })
   }
   const changeNameHandler = (e) => {
     let createNew = {
