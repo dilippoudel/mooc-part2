@@ -63,7 +63,7 @@ function App() {
     : notes.filter((note) => note.important === true)
   return (
     <div>
-      <h1>Notes</h1>
+      <h1>Notes Application</h1>
       <Notification message={errorMessage} />
       <form action="" onSubmit={addNote}>
         <input
