@@ -99,17 +99,16 @@ const App = () => {
         changeNumberHandler={changeNumberHandler}
       />
       <h3>Numbers</h3>
-      <div>
-        {persons !== null ? (
-          <Persons
-            lists={persons}
-            searchText={searchContactByName}
-            onDelete={(id) => phoneDeleteHandler(id)}
-          />
-        ) : (
-          'loading'
-        )}
-      </div>
+
+      {persons !== null ? (
+        <Persons
+          lists={persons}
+          searchText={searchContactByName}
+          onDelete={(id) => phoneDeleteHandler(id)}
+        />
+      ) : (
+        <p>loading</p>
+      )}
     </div>
   )
 }
