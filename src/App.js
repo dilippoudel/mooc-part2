@@ -13,7 +13,7 @@ const App = () => {
   const [searchContactByName, setSearchContactByName] = useState('')
   const [notification, setNotification] = useState(null)
 
-  const addPerson = (e) => {
+  const addPerson = async (e) => {
     e.preventDefault()
     const findExistedPerson = persons.find(
       (person) => person.name === newContact.name,
@@ -24,24 +24,19 @@ const App = () => {
           `${newContact.name} is already added to phonebook, replace the old number with a new one?`,
         )
       ) {
-        personService
-          .replaceNumber(findExistedPerson.id, newContact)
-          .then((response) => {
-            let contacts = persons.filter(
-              (person) => person.id !== findExistedPerson.id,
-            )
-            setPersons(contacts.concat(response.data))
-
-            setNewContact({ name: '', number: '' })
-          })
-          .catch((e) => {
-            let errorMessage = {
-              ...notification,
-              error: `Information of ${newContact.name} has already been removed from server.`,
-            }
-            setNotification(errorMessage)
-            setTimeout(() => setNotification(null), 3000)
-          })
+        try {
+          await personService.replaceNumber(findExistedPerson.id, newContact)
+          let allContacts = await personService.getAllPerson()
+          setPersons(allContacts)
+          setNewContact({ name: '', number: '' })
+        } catch (error) {
+          let errorMessage = {
+            ...notification,
+            error: `Information of ${newContact.name} has already been removed from server.`,
+          }
+          setNotification(errorMessage)
+          setTimeout(() => setNotification(null), 3000)
+        }
       }
 
       return
