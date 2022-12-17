@@ -1,7 +1,9 @@
-import noteService from './services/notes'
 import { useState, useEffect } from 'react'
+
+import noteService from './services/notes'
 import Note from './components/Note/Note'
 import Notification from './components/Notification/Notification'
+
 // footer component
 const Footer = () => {
   const footerStyle = {
@@ -24,10 +26,6 @@ function App() {
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
 
-  useEffect(() => {
-    noteService.getAll().then((initialNotes) => setNotes(initialNotes))
-  }, [])
-
   const addNote = (event) => {
     event.preventDefault()
     const noteObject = {
@@ -41,23 +39,23 @@ function App() {
     })
   }
 
-  const toogleImportanceOf = (id) => {
+  const toogleImportanceOf = async (id) => {
     const note = notes.find((note) => note.id === id)
     const changeNote = { ...note, important: !note.important }
-    noteService
-      .update(id, changeNote)
-      .then((returnedNote) => {
-        setNotes(notes.map((n) => (n.id !== id ? n : returnedNote)))
-      })
-      .catch((err) => {
-        setErrorMessage(
-          `Note '${note.content}' was already deleted from server`,
-        )
-        setTimeout(() => setErrorMessage(null), 3000)
-        setNotes(notes.filter((note) => note.id !== id))
-      })
+    try {
+      await noteService.update(id, changeNote)
+      let newData = await noteService.getAll()
+      setNotes(newData)
+    } catch (err) {
+      setErrorMessage(`Note '${note.content}' was already deleted from server`)
+      setTimeout(() => setErrorMessage(null), 3000)
+      setNotes(notes.filter((note) => note.id !== id))
+    }
   }
 
+  useEffect(() => {
+    noteService.getAll().then((initialNotes) => setNotes(initialNotes))
+  }, [])
   const notesToShowAll = showAll
     ? notes
     : notes.filter((note) => note.important === true)
@@ -81,7 +79,7 @@ function App() {
           <Note
             key={note.id}
             note={note}
-            toogleImportance={() => toogleImportanceOf(note.id)}
+            onClick={() => toogleImportanceOf(note.id)}
           />
         ))}
       </ul>
