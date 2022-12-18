@@ -41,16 +41,26 @@ const App = () => {
 
       return
     }
-    personService.createAndSavePerson(newContact).then((response) => {
-      let newState = {
-        ...notification,
-        success: `Added ${response.name}`,
-      }
-      setNotification(newState)
-      setTimeout(() => setNotification(null), 3000)
-      setPersons(persons.concat(response))
-      setNewContact({ name: '', number: '' })
-    })
+    personService
+      .createAndSavePerson(newContact)
+      .then((response) => {
+        let newState = {
+          ...notification,
+          success: `Added ${response.name}`,
+        }
+        setNotification(newState)
+        setTimeout(() => setNotification(null), 3000)
+        setPersons(persons.concat(response))
+        setNewContact({ name: '', number: '' })
+      })
+      .catch((error) => {
+        let errorMessage = {
+          ...notification,
+          error: error.response.data.error,
+        }
+        setNotification(errorMessage)
+        setTimeout(() => setNotification(null), 3000)
+      })
   }
   const changeNameHandler = (e) => {
     let createNew = {
